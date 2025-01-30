@@ -1,6 +1,6 @@
-@use '@carbon/styles/scss/colors';
-@use '@carbon/styles/scss/spacing';
-@use '@carbon/styles/scss/type';
+@use '@carbon/colors';
+@use '@carbon/layout';
+@use '@carbon/type';
 
 .referencesTable {
   min-height: 15rem;
@@ -13,7 +13,7 @@
 }
 
 .referencesTableBody {
-  min-height: spacing.$spacing-13;
+  min-height: layout.$spacing-13;
 }
 
 .referencesTableContainer {

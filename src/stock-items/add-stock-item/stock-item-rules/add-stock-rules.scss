@@ -1,17 +1,17 @@
-@use '@carbon/styles/scss/spacing';
-@use '@carbon/styles/scss/type';
+@use '@carbon/layout';
+@use '@carbon/type';
 @import '~@openmrs/esm-styleguide/src/vars';
 
 .section {
-  margin: spacing.$spacing-03;
+  margin: layout.$spacing-03;
 }
 
 .sectionTitle {
   @include type.type-style('heading-compact-02');
   color: $text-02;
-  margin-bottom: spacing.$spacing-04;
+  margin-bottom: layout.$spacing-04;
 }
 
 .modalBody {
-  padding-bottom: spacing.$spacing-05;
+  padding-bottom: layout.$spacing-05;
 }
