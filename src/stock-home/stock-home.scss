@@ -1,7 +1,7 @@
 @use '@carbon/layout';
 @use '@carbon/type';
 @use '@carbon/colors';
-@use '~@openmrs/esm-styleguide/src/vars' as *;
+@use '@openmrs/esm-styleguide/src/vars' as *;
 .cardContainer {
   background-color: colors.$white;
   display: flex;

@@ -1,6 +1,6 @@
 @use '@carbon/colors';
 @use '@carbon/type';
-@use '@carbon/styles/scss/spacing';
+@use '@carbon/layout';
 @use '@openmrs/esm-styleguide/src/vars' as *;
 
 // Patient List Table
@@ -25,7 +25,7 @@
 .stockItemSearchContainer {
   position: relative;
   flex-direction: column;
-  margin-bottom: spacing.$spacing-01;
+  margin-bottom: layout.$spacing-01;
 }
 
 .searchResults {

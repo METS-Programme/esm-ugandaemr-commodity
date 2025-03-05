@@ -19,7 +19,7 @@ const ControlledRadioButtonGroup = <T,>(props: ControlledRadioButtonGroupProps<T
       render={({ field: { onChange, value, ref } }) => (
         <RadioButtonGroup
           {...props}
-          onChange={(selection: boolean, name: string, event: unknown) => {
+          onChange={(selection: string | number, name: string, event: any) => {
             onChange(selection, name, event);
 
             // Fire prop change

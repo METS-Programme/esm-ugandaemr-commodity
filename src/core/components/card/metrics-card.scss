@@ -1,7 +1,7 @@
 @use '@carbon/layout';
 @use '@carbon/type';
 @use '@carbon/colors';
-@use '~@openmrs/esm-styleguide/src/vars' as *;
+@use '@openmrs/esm-styleguide/src/vars' as *;
 .tileContainer {
   border: 0.0625rem solid $ui-03;
   flex-grow: 1;
