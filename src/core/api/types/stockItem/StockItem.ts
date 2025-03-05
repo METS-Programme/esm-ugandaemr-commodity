@@ -13,6 +13,14 @@ export interface StockItem extends BaseOpenmrsData {
   stockItemPackagingUOMs: StockItemPackagingUOM[];
 }
 
+export interface DrugStockItem extends BaseOpenmrsData {
+  uuid: string;
+  display: string;
+  name: string;
+  strength: string;
+  concept: Concept;
+}
+
 export interface StockItemDTO {
   uuid: string | null | undefined;
   isDrug: boolean | null | undefined;

@@ -84,6 +84,16 @@ export const stockSettingsLink = getSyncLifecycle(
 
 export const stockManagement = getSyncLifecycle(stockManagementComponent, options);
 
+// stock details  (balances and prices)
+export const orderPriceDetailsExtension = getAsyncLifecycle(
+  () => import('./stock-items/stock-item-price-details/stock-item-price-details.component'),
+  options,
+);
+export const orderStockDetailsExtension = getAsyncLifecycle(
+  () => import('./stock-items/stock-item-price-details/stock-item-stock-details.component'),
+  options,
+);
+
 export const root = getSyncLifecycle(Root, options);
 
 export const deleteStockModal = getAsyncLifecycle(() => import('./stock-sources/delete-stock-modal.component'), {
