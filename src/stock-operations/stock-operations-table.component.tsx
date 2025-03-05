@@ -1,10 +1,9 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { useStockOperationPages } from './stock-operations-table.resource';
-import { ResourceRepresentation } from '../core/api/api';
 import {
   DataTable,
-  TabPanel,
   DataTableSkeleton,
+  DatePicker,
+  DatePickerInput,
+  InlineLoading,
   Pagination,
   Table,
   TableBody,
@@ -17,30 +16,29 @@ import {
   TableHeader,
   TableRow,
   TableToolbar,
-  TableToolbarContent,
-  TableToolbarSearch,
-  Tile,
-  DatePickerInput,
-  DatePicker,
-  TableToolbarMenu,
   TableToolbarAction,
-  InlineLoading,
+  TableToolbarContent,
+  TableToolbarMenu,
+  TableToolbarSearch,
+  TabPanel,
+  Tile,
 } from '@carbon/react';
 import { ArrowRight } from '@carbon/react/icons';
-import { formatDisplayDate } from '../core/utils/datetimeUtils';
 import { isDesktop, restBaseUrl } from '@openmrs/esm-framework';
-import StockOperationTypesSelector from './stock-operation-types-selector/stock-operation-types-selector.component';
-import { launchAddOrEditDialog } from './stock-operation.utils';
-import { initialStockOperationValue } from '../core/utils/utils';
-import { StockOperationType } from '../core/api/types/stockOperation/StockOperationType';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import EditStockOperationActionMenu from './edit-stock-operation/edit-stock-operation-action-menu.component';
-import StockOperationsFilters from './stock-operations-filters.component';
 import { DATE_PICKER_CONTROL_FORMAT, DATE_PICKER_FORMAT, StockFilters } from '../constants';
+import { ResourceRepresentation } from '../core/api/api';
+import { StockOperationType } from '../core/api/types/stockOperation/StockOperationType';
+import { formatDisplayDate } from '../core/utils/datetimeUtils';
 import { handleMutate } from '../utils';
+import EditStockOperationActionMenu from './edit-stock-operation/edit-stock-operation-action-menu.component';
+import StockOperationTypesSelector from './stock-operation-types-selector/stock-operation-types-selector.component';
+import StockOperationsFilters from './stock-operations-filters.component';
+import { useStockOperationPages } from './stock-operations-table.resource';
 
 import styles from './stock-operations-table.scss';
-import StockOperationStatus from './add-stock-operation/stock-operation-status.component';
+import StockOperationStatusRow from './stock-operation-status/stock-operation-status-row';
 
 interface StockOperationsTableProps {
   status?: string;
@@ -98,8 +96,6 @@ const StockOperations: React.FC<StockOperationsTableProps> = () => {
   const filterApplied =
     selectedFromDate || selectedToDate || selectedSources.length || selectedStatus.length || selectedOperations.length;
 
-  const [operations, setOperations] = useState<StockOperationType[]>([]);
-
   const handleOnFilterChange = useCallback((selectedItems, filterType) => {
     if (filterType === StockFilters.SOURCES) {
       setSelectedSources(selectedItems);
@@ -125,13 +121,6 @@ const StockOperations: React.FC<StockOperationsTableProps> = () => {
     }
   };
 
-  const handleEditClick = useCallback(
-    (stockOperation, isEditing) => {
-      launchAddOrEditDialog(t, stockOperation, isEditing, operation, operations, false);
-    },
-    [t, operation, operations],
-  );
-
   const tableRows = useMemo(() => {
     return items?.map((stockOperation, index) => {
       const commonNames = stockOperation?.stockOperationItems
@@ -144,15 +133,7 @@ const StockOperations: React.FC<StockOperationsTableProps> = () => {
         key: `key-${stockOperation?.uuid}`,
         operationTypeName: `${stockOperation?.operationTypeName}`,
         operationNumber: (
-          <EditStockOperationActionMenu
-            model={stockOperation}
-            operations={operations}
-            operationUuid={operation.uuid}
-            operationNumber={''}
-            onEdit={() => handleEditClick(stockOperation, true)}
-            showIcon={false}
-            showprops={true}
-          />
+          <EditStockOperationActionMenu stockOperation={stockOperation} showIcon={false} showprops={true} />
         ),
         stockOperationItems: commonNames,
         status: `${stockOperation?.status}`,
@@ -169,20 +150,10 @@ const StockOperations: React.FC<StockOperationsTableProps> = () => {
           stockOperation?.responsiblePersonFamilyName ?? stockOperation?.responsiblePersonOther ?? ''
         } ${stockOperation?.responsiblePersonGivenName ?? ''}`,
         operationDate: formatDisplayDate(stockOperation?.operationDate),
-        actions: (
-          <EditStockOperationActionMenu
-            model={stockOperation}
-            operations={operations}
-            operationUuid={operation.uuid}
-            operationNumber={''}
-            onEdit={() => handleEditClick(stockOperation, true)}
-            showIcon={true}
-            showprops={false}
-          />
-        ),
+        actions: <EditStockOperationActionMenu stockOperation={stockOperation} showIcon={true} showprops={false} />,
       };
     });
-  }, [items, operations, handleEditClick, operation]);
+  }, [items]);
 
   if (isLoading && !filterApplied) {
     return (
@@ -243,14 +214,7 @@ const StockOperations: React.FC<StockOperationsTableProps> = () => {
                   <TableToolbarAction onClick={handleRefresh}>Refresh</TableToolbarAction>
                 </TableToolbarMenu>
 
-                <StockOperationTypesSelector
-                  onOperationTypeSelected={(operation) => {
-                    launchAddOrEditDialog(t, initialStockOperationValue(), false, operation, operations, false);
-                  }}
-                  onOperationLoaded={(ops) => {
-                    setOperations(ops);
-                  }}
-                />
+                <StockOperationTypesSelector />
               </TableToolbarContent>
             </TableToolbar>
             <Table {...getTableProps()}>
@@ -289,7 +253,7 @@ const StockOperations: React.FC<StockOperationsTableProps> = () => {
                       </TableExpandRow>
                       {row.isExpanded ? (
                         <TableExpandedRow colSpan={headers.length + 2}>
-                          <StockOperationStatus model={items[index]} />
+                          <StockOperationStatusRow stockOperation={items[index]} />
                         </TableExpandedRow>
                       ) : (
                         <TableExpandedRow className={styles.hiddenRow} colSpan={headers.length + 2} />

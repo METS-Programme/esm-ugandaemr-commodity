@@ -1,39 +1,38 @@
-import React, { useEffect, useMemo } from 'react';
 import { ButtonSkeleton, OverflowMenu, OverflowMenuItem } from '@carbon/react';
 import { OverflowMenuVertical } from '@carbon/react/icons';
-import { useStockOperationTypes, useUserRoles } from '../../stock-lookups/stock-lookups.resource';
+import { showSnackbar } from '@openmrs/esm-framework';
+import React, { useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StockOperationType } from '../../core/api/types/stockOperation/StockOperationType';
+import { launchAddOrEditDialog } from '../stock-operation.utils';
+import useFilteredOperationTypesByRoles from '../stock-operations-forms/hooks/useFilteredOperationTypesByRoles';
 
-interface StockOperationTypesSelectorProps {
-  onOperationTypeSelected?: (operation: StockOperationType) => void;
-  onOperationLoaded?: (operation: StockOperationType[]) => void;
-}
+const StockOperationTypesSelector = () => {
+  const { t } = useTranslation();
+  const { error, isLoading, operationTypes } = useFilteredOperationTypesByRoles();
 
-const StockOperationTypesSelector: React.FC<StockOperationTypesSelectorProps> = ({
-  onOperationTypeSelected,
-  onOperationLoaded,
-}) => {
-  const {
-    types: { results: createOperationTypes },
-    isLoading,
-    error,
-  } = useStockOperationTypes();
-  const { userRoles } = useUserRoles();
-
-  const filterOperationTypes = useMemo(() => {
-    const applicablePrivilegeScopes = userRoles?.operationTypes?.map((p) => p.operationTypeUuid) || [];
-    const uniqueApplicablePrivilegeScopes = [...new Set(applicablePrivilegeScopes)];
-
-    return createOperationTypes?.filter((p) => uniqueApplicablePrivilegeScopes.includes(p.uuid)) || [];
-  }, [createOperationTypes, userRoles]);
+  const handleSelect = useCallback(
+    (stockOperationType: StockOperationType) => {
+      launchAddOrEditDialog(t, stockOperationType, undefined, false);
+    },
+    [t],
+  );
 
   useEffect(() => {
-    onOperationLoaded?.(filterOperationTypes);
-  }, [filterOperationTypes, onOperationLoaded]);
+    if (error) {
+      showSnackbar({
+        kind: 'error',
+        title: t('stockOperationError', 'Error loading stock operation types'),
+        subtitle: error?.message,
+      });
+    }
+  }, [error, t]);
 
-  if (isLoading || error) return <ButtonSkeleton />;
+  if (isLoading) return <ButtonSkeleton />;
 
-  return filterOperationTypes && filterOperationTypes.length ? (
+  if (error) return null;
+
+  return operationTypes && operationTypes.length ? (
     <OverflowMenu
       renderIcon={() => (
         <>
@@ -53,14 +52,14 @@ const StockOperationTypesSelector: React.FC<StockOperationTypesSelectorProps> = 
         whiteSpace: 'nowrap',
       }}
     >
-      {filterOperationTypes
+      {operationTypes
         .sort((a, b) => a.name.localeCompare(b.name))
         .map((operation) => (
           <OverflowMenuItem
             key={operation.uuid}
             itemText={operation.name}
             onClick={() => {
-              onOperationTypeSelected?.(operation);
+              handleSelect(operation);
             }}
           />
         ))}

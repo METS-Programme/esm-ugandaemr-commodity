@@ -1,24 +1,20 @@
-import React, { useEffect, useMemo, useState } from 'react';
 import {
   DataTable,
-  TableContainer,
   Table,
-  TableHead,
-  TableRow,
-  TableHeader,
   TableBody,
   TableCell,
+  TableContainer,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from '@carbon/react';
-import { useStockItem } from '../../../stock-items.resource';
-import PrintableBincardTransactionHeader from './printable-bincard-transaction-header.component';
+import { ArrowLeft } from '@carbon/react/icons';
+import { openmrsFetch, restBaseUrl } from '@openmrs/esm-framework';
+import React, { useEffect, useState } from 'react';
+import { formatDisplayDate } from '../../../../core/utils/datetimeUtils';
 import PrintableStockcardTransactionHeader from './printable-stockcard-transaction-header.component';
 import PrintableTransactionFooter from './printable-transaction-footer.component';
 import styles from './printable-transaction.scss';
-import StockOperationReference from '../../../../stock-operations/add-stock-operation/stock-operation-reference.component';
-import { formatDisplayDate } from '../../../../core/utils/datetimeUtils';
-import { ArrowLeft } from '@carbon/react/icons';
-import { usePatient } from '../../../../stock-lookups/stock-lookups.resource';
-import { openmrsFetch, restBaseUrl } from '@openmrs/esm-framework';
 
 type Props = {
   title: string;

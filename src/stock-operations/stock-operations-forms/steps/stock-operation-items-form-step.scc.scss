@@ -1,0 +1,64 @@
+@use '@carbon/colors';
+@use '@carbon/layout';
+@use '@carbon/type';
+@import '~@openmrs/esm-styleguide/src/vars';
+
+.tableContainer {
+  :global(.cds--data-table-content) {
+    height: calc(100vh - 150px);
+  }
+}
+
+.tableHeader {
+  width: 3% !important;
+}
+
+.tableBody {
+  display: flex;
+  flex-direction: row;
+  width: 3% !important;
+  gap: 8px;
+}
+
+.dataTable {
+  width: 100%;
+}
+
+.availability {
+  font-size: 0.875rem;
+
+  .outOfStock {
+    color: #da1e28;
+  }
+}
+
+.heading {
+  text-align: left;
+  text-transform: capitalize;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: layout.$spacing-03 0 layout.$spacing-03 0;
+
+  h4 {
+    @include type.type-style('heading-compact-02');
+    color: colors.$gray-70;
+
+    &:after {
+      content: '';
+      display: block;
+      width: 2rem;
+      padding-top: 3px;
+      border-bottom: 0.375rem solid;
+      @include brand-03(border-bottom-color);
+    }
+  }
+}
+
+.btnSet {
+  display: flex;
+  flex-direction: row;
+  gap: layout.$spacing-03;
+  align-items: center;
+}

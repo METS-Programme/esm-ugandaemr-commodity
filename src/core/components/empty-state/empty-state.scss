@@ -1,0 +1,44 @@
+@use '@carbon/colors';
+@use '@carbon/layout';
+@use '@carbon/type';
+@import '~@openmrs/esm-styleguide/src/vars';
+
+.layer {
+  text-align: center;
+  border: 1px solid colors.$gray-20;
+  margin: layout.$spacing-03;
+}
+
+.content {
+  @include type.type-style('heading-compact-01');
+  color: colors.$gray-70;
+  margin-top: layout.$layout-05;
+  margin-bottom: layout.$spacing-03;
+}
+
+.tile {
+  text-align: center;
+}
+
+.heading {
+  text-align: left;
+  text-transform: capitalize;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  h4 {
+    @include type.type-style('heading-compact-02');
+    color: colors.$gray-70;
+
+    &:after {
+      content: '';
+      display: block;
+      width: 2rem;
+      padding-top: 3px;
+      border-bottom: 0.375rem solid;
+      @include brand-03(border-bottom-color);
+    }
+  }
+}

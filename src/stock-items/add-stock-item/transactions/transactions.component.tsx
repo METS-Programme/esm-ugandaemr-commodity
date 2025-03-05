@@ -1,19 +1,15 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useStockItemsTransactions } from './transactions.resource';
-import { DataTableSkeleton, Button } from '@carbon/react';
-import { formatDisplayDate } from '../../../core/utils/datetimeUtils';
+import { DataTableSkeleton } from '@carbon/react';
 import { ArrowLeft } from '@carbon/react/icons';
-import DataList from '../../../core/components/table/table.component';
-import { StockOperationType } from '../../../core/api/types/stockOperation/StockOperationType';
-import TransactionsLocationsFilter from './transaction-filters/transaction-locations-filter.component';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { StockItemInventoryFilter, useStockItem } from '../../stock-items.resource';
 import { useTranslation } from 'react-i18next';
-import StockOperationReference from '../../../stock-operations/add-stock-operation/stock-operation-reference.component';
-import { Add } from '@carbon/react/icons';
-import { Printer } from '@carbon/react/icons';
-import TransactionsPrintout from './printout/transactions-bincard-printout.component';
+import DataList from '../../../core/components/table/table.component';
+import { formatDisplayDate } from '../../../core/utils/datetimeUtils';
+import { StockItemInventoryFilter } from '../../stock-items.resource';
 import TransactionsPrintAction from './printout/transactions-print-action.component';
+import TransactionsLocationsFilter from './transaction-filters/transaction-locations-filter.component';
+import { useStockItemsTransactions } from './transactions.resource';
+import StockOperationReference from '../../../stock-operations/stock-operation-reference.component';
 
 interface TransactionsProps {
   onSubmit?: () => void;

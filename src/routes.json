@@ -208,6 +208,15 @@
       "component": "transactionStockcardPrintPreviewModal"
     }
   ],
+  "workspaces": [
+    {
+      "name": "stock-operation-stock-items-form",
+      "component": "stockOperationStockItemForm",
+      "title": "Stock Items",
+      "type": "form",
+      "width": "wider"
+    }
+  ],
   "pages": [
     {
       "component": "root",

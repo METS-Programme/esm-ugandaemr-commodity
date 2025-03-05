@@ -1,0 +1,41 @@
+@use '@carbon/layout';
+@use '@carbon/type';
+@use '@carbon/colors';
+
+.layer {
+  display: flex;
+  flex-direction: column;
+  gap: layout.$spacing-05;
+  padding: layout.$spacing-05;
+}
+
+.stepperContainer {
+  display: flex;
+  gap: layout.$spacing-03;
+  flex: 1;
+  align-items: center;
+  width: 100%;
+}
+
+.stepperItem {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  gap: layout.$spacing-03;
+  align-items: center;
+  padding: layout.$spacing-03;
+  border-top: layout.$spacing-01 solid colors.$gray-30;
+}
+
+.stepperItemActive {
+  border-top: layout.$spacing-02 solid var(--brand-03);
+}
+
+.subtTitle {
+  color: colors.$gray-50;
+  @include type.type-style('body-01');
+}
+
+.title {
+  @include type.type-style('heading-02');
+}

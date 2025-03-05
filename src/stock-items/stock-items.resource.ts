@@ -1,15 +1,15 @@
 import { openmrsFetch, restBaseUrl } from '@openmrs/esm-framework';
+import useSWR from 'swr';
 import { ResourceFilterCriteria, toQueryParams } from '../core/api/api';
 import { PageableResult } from '../core/api/types/PageableResult';
+import { StockBatchDTO } from '../core/api/types/stockItem/StockBatchDTO';
 import { InventoryGroupBy, StockItemDTO } from '../core/api/types/stockItem/StockItem';
 import { StockItemInventory } from '../core/api/types/stockItem/StockItemInventory';
-import useSWR from 'swr';
-import { StockItemTransactionDTO } from '../core/api/types/stockItem/StockItemTransaction';
-import { StockOperationItemCost } from '../core/api/types/stockOperation/StockOperationItemCost';
-import { StockBatchDTO } from '../core/api/types/stockItem/StockBatchDTO';
 import { StockItemPackagingUOMDTO } from '../core/api/types/stockItem/StockItemPackagingUOM';
-import { StockRule } from '../core/api/types/stockItem/StockRule';
 import { StockItemReference, StockItemReferenceDTO } from '../core/api/types/stockItem/StockItemReference';
+import { StockItemTransactionDTO } from '../core/api/types/stockItem/StockItemTransaction';
+import { StockRule } from '../core/api/types/stockItem/StockRule';
+import { StockOperationItemCost } from '../core/api/types/stockOperation/StockOperationItemCost';
 
 export interface StockItemFilter extends ResourceFilterCriteria {
   isDrug?: string | null | undefined;

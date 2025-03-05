@@ -2,9 +2,10 @@ import { FetchResponse, openmrsFetch, restBaseUrl } from '@openmrs/esm-framework
 import useSWR from 'swr';
 import { ResourceFilterCriteria, toQueryParams } from '../core/api/api';
 import { PageableResult } from '../core/api/types/PageableResult';
-import { StockOperationDTO } from '../core/api/types/stockOperation/StockOperationDTO';
-import { StopOperationAction } from '../core/api/types/stockOperation/StockOperationAction';
 import { InventoryGroupBy } from '../core/api/types/stockItem/StockItem';
+import { StopOperationAction } from '../core/api/types/stockOperation/StockOperationAction';
+import { StockOperationDTO } from '../core/api/types/stockOperation/StockOperationDTO';
+import { StockOperationItemDtoSchema } from './validation-schema';
 
 export interface StockOperationFilter extends ResourceFilterCriteria {
   status?: string | null | undefined;
@@ -63,7 +64,7 @@ export function useStockOperation(id: string | null) {
   const apiUrl = id ? `${restBaseUrl}/stockmanagement/stockoperation/${id}` : null;
   const { data, error, isLoading } = useSWR<{ data: StockOperationDTO }, Error>(apiUrl, apiUrl ? openmrsFetch : null);
   return {
-    items: data?.data || {},
+    items: data?.data,
     isLoading,
     error,
   };
@@ -124,30 +125,30 @@ export function deleteStockOperationItem(id: string) {
 }
 
 // createStockOperation
-export function createStockOperation(item: StockOperationDTO) {
+export function createStockOperation(data: StockOperationItemDtoSchema) {
   const apiUrl = `${restBaseUrl}/stockmanagement/stockoperation`;
   const abortController = new AbortController();
-  return openmrsFetch(apiUrl, {
+  return openmrsFetch<StockOperationDTO>(apiUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     signal: abortController.signal,
-    body: item,
+    body: data,
   });
 }
 
 // updateStockOperation
-export function updateStockOperation(item: StockOperationDTO) {
-  const apiUrl = `${restBaseUrl}/stockmanagement/stockoperation/${item.uuid}`;
+export function updateStockOperation(stockOperation: StockOperationDTO, data: StockOperationItemDtoSchema) {
+  const apiUrl = `${restBaseUrl}/stockmanagement/stockoperation/${stockOperation.uuid}`;
   const abortController = new AbortController();
-  return openmrsFetch(apiUrl, {
+  return openmrsFetch<StockOperationDTO>(apiUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     signal: abortController.signal,
-    body: item,
+    body: data,
   });
 }
 

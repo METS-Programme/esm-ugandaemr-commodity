@@ -9,10 +9,9 @@ import { launchAddOrEditDialog } from '../stock-operation.utils';
 
 interface StockOperationIssueStockButtonProps {
   operation: StockOperationDTO;
-  operations: StockOperationType[];
 }
 
-const StockOperationIssueStockButton: React.FC<StockOperationIssueStockButtonProps> = ({ operation, operations }) => {
+const StockOperationIssueStockButton: React.FC<StockOperationIssueStockButtonProps> = ({ operation }) => {
   const { t } = useTranslation();
   const type: StockOperationType = {
     uuid: '',
@@ -40,7 +39,7 @@ const StockOperationIssueStockButton: React.FC<StockOperationIssueStockButtonPro
 
   const modifiedOperation = addRequisitionStockOperation(operation);
   const handleButtonClick = () => {
-    launchAddOrEditDialog(t, modifiedOperation, false, type, operations, false);
+    launchAddOrEditDialog(t, type, modifiedOperation, false);
   };
 
   return (

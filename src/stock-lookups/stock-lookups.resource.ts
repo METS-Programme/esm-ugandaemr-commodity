@@ -168,8 +168,8 @@ export function useUsers(filter: UserFilterCriteria) {
 }
 
 // getUser
-export function useUser(id: string) {
-  const apiUrl = `${restBaseUrl}/user/${id}`;
+export function useUser(id: string, v?: string) {
+  const apiUrl = `${restBaseUrl}/user/${id}${toQueryParams({ v: v as any })}`;
   const { data, error, isLoading } = useSWR<
     {
       data: User;

@@ -61,6 +61,35 @@ export const initialStockOperationValue = () => {
   };
 };
 
+export const pick = <T extends object>(obj: T, fields: string[]): Partial<T> => {
+  if (!obj || typeof obj !== 'object') {
+    throw new TypeError('First argument must be an object');
+  }
+
+  if (!Array.isArray(fields)) {
+    throw new TypeError('Second argument must be an array');
+  }
+
+  const getNestedValue = (obj: any, path: string): any => {
+    return path.split('.').reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined), obj);
+  };
+
+  return fields.reduce((result, field) => {
+    const value = getNestedValue(obj, field);
+    if (value !== undefined) {
+      const keys = field.split('.');
+      const lastKey = keys.pop()!;
+
+      // Create nested structure in result
+      keys.reduce((nested, key) => {
+        if (!nested[key]) nested[key] = {};
+        return nested[key];
+      }, result as any)[lastKey] = value;
+    }
+    return result;
+  }, {} as Partial<T>);
+};
+
 export const otherUser: User = {
   uuid: 'Other',
   display: 'Other',
