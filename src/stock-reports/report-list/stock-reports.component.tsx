@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   DataTable,
@@ -17,6 +17,8 @@ import {
   TableToolbarSearch,
   Tile,
   Button,
+  DatePickerInput,
+  DatePicker,
   InlineLoading,
   TableToolbarMenu,
   TableToolbarAction,
@@ -54,6 +56,9 @@ import { handleMutate } from '../../utils';
 import { PrivilagedView } from '../../core/components/privilages-component/privilages.component';
 import StockReportStatus from './stock-report-status.component';
 import StockReportParameters from './stock-report-parameters.component';
+import { DATE_PICKER_CONTROL_FORMAT, DATE_PICKER_FORMAT, ReportFilters } from '../../constants';
+import StockReportsFilters from './stock-reports-filters.component';
+import { ResourceRepresentation } from '../../core/api/api'; // Import ResourceRepresentation
 
 const StockReports: React.FC = () => {
   const { t } = useTranslation();
@@ -61,10 +66,64 @@ const StockReports: React.FC = () => {
   const handleRefresh = () => {
     handleMutate(`${restBaseUrl}/stockmanagement/batchjob?batchJobType=Report&v=default`);
   };
-  const { reports, isLoading, currentPage, pageSizes, totalItems, goTo, currentPageSize, setPageSize } =
-    useGetReports();
+
+  const [selectedRequestFromDate, setSelectedRequestFromDate] = useState(null);
+  const [selectedRequestToDate, setSelectedRequestToDate] = useState(null);
+  const [selectedCompletedFromDate, setSelectedCompletedFromDate] = useState(null);
+  const [selectedCompletedToDate, setSelectedCompletedToDate] = useState(null);
+  const [selectedLocation, setSelectedLocation] = useState<string[]>([]);
+  const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
 
   const { user } = useSession();
+
+  const { reports, isLoading, currentPage, pageSizes, totalItems, goTo, currentPageSize, setPageSize } = useGetReports({
+    v: ResourceRepresentation.Full,
+    totalCount: true,
+    reportRequestedDateMin: selectedRequestFromDate?.toISOString(),
+    reportRequestedDateMax: selectedRequestToDate?.toISOString(),
+    reportCompletedDateMin: selectedCompletedFromDate?.toISOString(),
+    reportCompleteDateMax: selectedCompletedToDate?.toISOString(),
+    status: selectedStatus.join(','),
+    locationUuid: selectedLocation.join(','),
+  });
+
+  const handleOnFilterChange = useCallback((selectedItems, filterType) => {
+    if (filterType === ReportFilters.STATUS) {
+      setSelectedStatus(selectedItems);
+    } else {
+      setSelectedLocation(selectedItems);
+    }
+  }, []);
+
+  const handleRequestDateFilterChange = ([startRequestDate, endRequestDate]) => {
+    if (startRequestDate) {
+      setSelectedRequestFromDate(startRequestDate);
+      if (selectedRequestToDate && startRequestDate && selectedRequestToDate < startRequestDate) {
+        setSelectedRequestToDate(startRequestDate);
+      }
+    }
+    if (endRequestDate) {
+      setSelectedRequestToDate(endRequestDate);
+      if (selectedRequestFromDate && endRequestDate && selectedRequestFromDate > endRequestDate) {
+        setSelectedRequestFromDate(endRequestDate);
+      }
+    }
+  };
+
+  const handleCompletedDateFilterChange = ([startCompletedDate, endCompletedDate]) => {
+    if (startCompletedDate) {
+      setSelectedCompletedFromDate(startCompletedDate);
+      if (selectedCompletedToDate && startCompletedDate && selectedCompletedToDate < startCompletedDate) {
+        setSelectedCompletedToDate(startCompletedDate);
+      }
+    }
+    if (endCompletedDate) {
+      setSelectedCompletedToDate(endCompletedDate);
+      if (selectedCompletedFromDate && endCompletedDate && selectedCompletedFromDate > endCompletedDate) {
+        setSelectedCompletedFromDate(endCompletedDate);
+      }
+    }
+  };
 
   const canViewReports =
     user.privileges.filter((privilage) => privilage.display === APP_STOCKMANAGEMENT_REPORTS_VIEW).length > 0;
@@ -79,7 +138,6 @@ const StockReports: React.FC = () => {
         header: t('report', 'Report'),
         key: 'report',
       },
-
       {
         id: 1,
         header: t('parameters', 'Parameters'),
@@ -224,6 +282,36 @@ const StockReports: React.FC = () => {
             >
               <TableToolbarContent className={styles.toolbarContent}>
                 <TableToolbarSearch persistent onChange={onInputChange} />
+                <div className={styles.filterContainer}>
+                  <StockReportsFilters filterName={ReportFilters.LOCATION} onFilterChange={handleOnFilterChange} />
+                  <StockReportsFilters filterName={ReportFilters.STATUS} onFilterChange={handleOnFilterChange} />
+                  <p>Requested:</p>
+                  <DatePicker
+                    className={styles.dateAlign}
+                    datePickerType="range"
+                    dateFormat={DATE_PICKER_CONTROL_FORMAT}
+                    value={[selectedRequestFromDate, selectedRequestToDate]}
+                    onChange={([startRequestDate, endRequestDate]) => {
+                      handleRequestDateFilterChange([startRequestDate, endRequestDate]);
+                    }}
+                  >
+                    <DatePickerInput placeholder={DATE_PICKER_FORMAT} />
+                    <DatePickerInput placeholder={DATE_PICKER_FORMAT} />
+                  </DatePicker>
+                  <p>Completed:</p>
+                  <DatePicker
+                    className={styles.dateAlign}
+                    datePickerType="range"
+                    dateFormat={DATE_PICKER_CONTROL_FORMAT}
+                    value={[selectedCompletedFromDate, selectedCompletedToDate]}
+                    onChange={([startCompletedDate, endCompletedDate]) => {
+                      handleCompletedDateFilterChange([startCompletedDate, endCompletedDate]);
+                    }}
+                  >
+                    <DatePickerInput placeholder={DATE_PICKER_FORMAT} />
+                    <DatePickerInput placeholder={DATE_PICKER_FORMAT} />
+                  </DatePicker>
+                </div>
                 <TableToolbarMenu>
                   <TableToolbarAction onClick={handleRefresh}>Refresh</TableToolbarAction>
                 </TableToolbarMenu>

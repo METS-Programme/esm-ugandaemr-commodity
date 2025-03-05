@@ -1,4 +1,6 @@
 import { openmrsFetch, restBaseUrl, usePagination } from '@openmrs/esm-framework';
+import { StockReportFilter } from './report-list/stock-report-filters';
+import { toQueryParams } from '../core/api/api';
 import useSWR from 'swr';
 import { ReportType } from './ReportType';
 import { useState } from 'react';
@@ -12,8 +14,11 @@ export function useReportTypes() {
     error,
   };
 }
-export function useGetReports() {
-  const apiUrl = `${restBaseUrl}/stockmanagement/batchjob?batchJobType=Report&v=default&limit=10&totalCount=true`;
+
+export function useGetReports(filter: StockReportFilter) {
+  const apiUrl = `${restBaseUrl}/stockmanagement/batchjob?batchJobType=Report&${toQueryParams(
+    filter,
+  )}&limit=10&totalCount=true`;
 
   const { data, error, isLoading, mutate } = useSWR<{ data: { results: any } }, Error>(apiUrl, openmrsFetch, {
     refreshInterval: 1000,

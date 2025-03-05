@@ -25,6 +25,10 @@ export const StockFilters = Object.freeze({
   OPERATION: 'Operation',
   STATUS: 'Status',
 });
+export const ReportFilters = Object.freeze({
+  STATUS: 'Status',
+  LOCATION: 'Location',
+});
 
 // privileges
 /** @type {string}: App: stockmanagement.dashboard, Able to view stock management application dashboard*/

@@ -78,3 +78,13 @@
     margin-right: 4px;
   }
 }
+
+.filterContainer {
+  display: flex;
+  align-items: center;
+}
+
+.dateAlign {
+  padding-top: layout.$spacing-03;
+  height: 100%;
+}
